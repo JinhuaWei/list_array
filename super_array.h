@@ -14,6 +14,8 @@
 
 typedef struct super_array_node {
     int next;
+    //the previous of first node is set -1
+    int previous;
     //1:有效，0：无效
     int valid;
     //暂时使用int类型的数据，
