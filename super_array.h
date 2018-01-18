@@ -45,3 +45,7 @@ int super_array_init(p_super_array_header header);
 //数据插入链表
 int insert_node(p_super_array_header header, int data, int* index);
 int get_data_by_index(p_super_array_header header, int* data, int index);
+int get_super_array_len(p_super_array_header header);
+int get_super_array_total_len(p_super_array_header header);
+int delete_node(p_super_array_header header, int index);
+int get_datas_by_list(p_super_array_header header);

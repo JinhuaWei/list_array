@@ -5,6 +5,11 @@
 #define DEFAULT_INCREASE_LEN 64
 
 /**
+* 0 节点为supper_array 的尾部,哨兵作用，不存放任何数据， 头结点的privous为 -1
+*/
+
+
+/**
 * return value:
 * 1: no memory space
 */
@@ -61,6 +66,7 @@ int insert_node(p_super_array_header header, int data, int* index)
                 return rtn;
         }
     }
+    ///获取空节点
     rtn = list_pick_node(&header->freelist, index);
     if(rtn != 0) {
         print_dbg("rtn=%d",rtn);
@@ -82,6 +88,7 @@ int insert_node(p_super_array_header header, int data, int* index)
         r_array_pace[*index].previous = -1;
     */
     header->len += 1;
+    print_dbg("supper_array len is %d\n", header->len);
     header->first=*index;
     return 0;
 }
@@ -107,13 +114,30 @@ int delete_node(p_super_array_header header, int index)
     }
     r_array[index].valid = 0;
     tmp_next = r_array[index].next;
-    r_array[tmp_next] = tmp_previous;
+    tmp_previous = r_array[index].previous;
+    r_array[tmp_next].previous = tmp_previous;
     r_array[tmp_previous].next = tmp_next;
+    header->len -= 1;
 /**
     tmp_previout = r_array[index].previous;
     r_array[r_array[index].previous].next = r_array[r_array[index].next].next;
     r_array[r_array[index].previous].index = r_array[r_array[index].next].next;
 */
+
+    return 0;
+}
+
+/**
+* 通过链表方式遍历整个super_array数据结构,并实现出来
+*/
+int get_datas_by_list(p_super_array_header header)
+{
+    p_super_array_node r_array = header->r_array_pace;
+    super_array_node tmpnode = r_array[header->first];
+    while(tmpnode.next != 0) {
+        printf("data is %d\n", tmpnode.data);
+        tmpnode = r_array[tmpnode.next];
+    }
 
     return 0;
 }
@@ -131,7 +155,7 @@ int get_super_array_len(p_super_array_header header)
 */
 int get_super_array_total_len(p_super_array_header header)
 {
-    return header->header;
+    return header->total_len;
 }
 
 /**
