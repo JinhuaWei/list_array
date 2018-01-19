@@ -35,7 +35,7 @@ typedef struct super_array_header {
     //每次增长的长度
     int increase_len;
     //super_array的存储空间
-    p_super_array_node r_array_pace;
+    p_super_array_node r_array;
     //节点空闲链表
     link_node freelist;
 
@@ -47,5 +47,5 @@ int insert_node(p_super_array_header header, int data, int* index);
 int get_data_by_index(p_super_array_header header, int* data, int index);
 int get_super_array_len(p_super_array_header header);
 int get_super_array_total_len(p_super_array_header header);
-int delete_node(p_super_array_header header, int index);
+int delete_node_by_index(p_super_array_header header, int index);
 int get_datas_by_list(p_super_array_header header);
