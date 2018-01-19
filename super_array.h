@@ -4,7 +4,7 @@
 #define DEBUG
 #ifdef DEBUG
 #define print_dbg(format, args...)\
-    printf("%s:%d"format"\n", __FILE__, __LINE__, ##args)
+    printf("%s:%d "format"\n", __FILE__, __LINE__, ##args)
 #else
 #define print_dbg(format, args...) {}
 #endif

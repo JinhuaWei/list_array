@@ -83,13 +83,14 @@ int insert_node(p_super_array_header header, int data, int* index)
     //super_array的第一个节点的previous设置为 -1
     r_array_pace[*index].previous = -1;
     r_array_pace[*index].next = header->first;
+    print_dbg("first=%d\n",header->first);
+    header->first = *index;
     /*
     if(header->len == 0)
         r_array_pace[*index].previous = -1;
     */
     header->len += 1;
     print_dbg("supper_array len is %d\n", header->len);
-    header->first=*index;
     return 0;
 }
 
@@ -133,10 +134,11 @@ int delete_node(p_super_array_header header, int index)
 int get_datas_by_list(p_super_array_header header)
 {
     p_super_array_node r_array = header->r_array_pace;
-    super_array_node tmpnode = r_array[header->first];
-    while(tmpnode.next != 0) {
-        printf("data is %d\n", tmpnode.data);
-        tmpnode = r_array[tmpnode.next];
+    int tmp_index = header->first;
+    print_dbg("header->first = %d\n", header->first);
+    while(tmp_index != 0) {
+        printf("data is %d next->index=%d\n", r_array[tmp_index].data, tmp_index);
+        tmp_index = r_array[tmp_index].next;
     }
 
     return 0;
