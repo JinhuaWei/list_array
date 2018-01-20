@@ -48,3 +48,6 @@ int get_super_array_len(p_super_array_header header);
 int get_super_array_total_len(p_super_array_header header);
 int delete_node_by_index(p_super_array_header header, int index);
 int get_datas_by_list(p_super_array_header header);
+int delete_node_by_match(p_super_array_header header, int (*func)(void* , void*), void* data);
+int modify_node_by_match(p_super_array_header header, int (*func)(void* , void*), \
+                        void* src_data, void* dst_data);

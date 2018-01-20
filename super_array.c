@@ -133,14 +133,56 @@ int delete_node_by_index(p_super_array_header header, int index)
     return 0;
 }
 /**
-* descprition: delete super_array by list mothod
+* return value:
+* 1 : match , 0 failed
 */
-int delete_node_by_list(p_super_array_header header)
+static int default_match(void* va, void* vb)
 {
-    // to do
+    if (*(int*)va == *(int*)vb) {
+        return 1;
+    }
     return 0;
 }
 
+/**
+* descprition: delete super_array by list mothod
+*/
+int delete_node_by_match(p_super_array_header header, int (*func)(void* , void*), void* data)
+{
+    int tmp_index = header->first;
+    p_super_array_node r_array = header->r_array;
+    int (*pf)(void*, void*);
+    int rtn;
+    if(func == NULL) {
+        pf = default_match;
+    }
+    //匹配相关data
+    while(tmp_index != 0) {
+        rtn = pf((void*)(&r_array[tmp_index].data), data);
+        if(rtn == 1) {
+            break;
+        }
+        tmp_index = r_array[tmp_index].next;
+    }
+
+    if(tmp_index == 0) {
+        print_dbg("not founded the data in the supper_array\n");
+        return 1;
+    }
+    print_dbg("find the data at the position: %d\n", tmp_index);
+
+    //删除节点
+   return delete_node_by_index(header, tmp_index);
+}
+
+/**
+* description: modify node data based data matched
+*/
+int modify_node_by_match(p_super_array_header header, int (*func)(void* , void*), \
+                        void* src_data, void* dst_data)
+{
+    return 0;
+}
 
 /**
 * 通过链表方式遍历整个super_array数据结构,并实现出来

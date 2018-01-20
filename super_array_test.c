@@ -1,37 +1,5 @@
 #include "super_array.h"
 
-/**
-* test case 1:初始化super_array，插入数据，取出相应文章数据，并打印
-*/
-int testcase1()
-{
-    int err;
-    printf("========testcase1=========");
-
-    printf("\n\n");
-    return 0;
-}
-/**
-* test case 2:初始化super_array，插入数据，取出相应文章数据，并打印
-*/
-int testcase2()
-{
-    int err;
-    printf("========testcase2=========");
-    printf("\n\n");
-    return 0;
-}
-
-/**
-* test case 3:初始化super_array，插入数据，取出相应文章数据，并打印
-*/
-int testcase3()
-{
-    int err;
-    printf("========testcase3=========");
-    printf("\n\n");
-    return 0;
-}
 int main()
 {
     int rtn;
@@ -79,8 +47,14 @@ int main()
     printf("\n\n");
 
     printf("===============testcase3=====================\n");
-    //testcase 3：查找并删除中的节点, 查找并修改节点
-    //printf();
+    //testcase 3：查找并删除中的节点
+    printf("显示supper_array数据 before 删除数据2：\n");
+    get_datas_by_list(pheader);
+    tmp = 2;
+    rtn = delete_node_by_match(pheader, NULL, &tmp);
+    printf("显示supper_array数据 after 删除数据2：\n");
+    get_datas_by_list(pheader);
+    printf("\n\n");
 
     return 0;
 }
