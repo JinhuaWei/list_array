@@ -33,7 +33,6 @@ int list_pick_node(p_link_node header, int* data)
         return 1;
     header->next = tpnode->next;
     *data = tpnode->data;
-    printf("data:%d\n",tpnode->data);
     free(tpnode);
     return 0;
 }

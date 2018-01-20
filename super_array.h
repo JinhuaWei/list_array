@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "link_int.h"
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define print_dbg(format, args...)\
     printf("%s:%d "format"\n", __FILE__, __LINE__, ##args)
@@ -42,7 +42,6 @@ typedef struct super_array_header {
 }super_array_header, *p_super_array_header;
 
 int super_array_init(p_super_array_header header);
-//数据插入链表
 int insert_node(p_super_array_header header, int data, int* index);
 int get_data_by_index(p_super_array_header header, int* data, int index);
 int get_super_array_len(p_super_array_header header);

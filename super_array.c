@@ -126,6 +126,10 @@ int delete_node_by_index(p_super_array_header header, int index)
     r_array[tmp_next].previous = tmp_previous;
     r_array[tmp_previous].next = tmp_next;
     header->len -= 1;
+
+    //将删除信息后空闲节点链接到freelist链表中
+    list_insert_node(&header->freelist,index);
+
     return 0;
 }
 /**
