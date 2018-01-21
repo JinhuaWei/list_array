@@ -14,14 +14,17 @@
 5. super_array 结构修改节点方法
 
 # 使用
-## 编译源码
-和测试用例一起编译：
-`make super_array_test`
-清楚：
-`make clean`
-
-## 执行
-`./super_array_test.out`
+编译代码：
+```make super_array_test```
+编译并执行：
+```make all```
+清除：
+```make clean```
+单独执行测试用例：
+```
+cd ${src_dir}
+./super_array_test.out
+```
 
 # 设计实现
 
