@@ -56,5 +56,5 @@ int get_super_array_total_len(p_super_array_header header);
 int get_datas_by_list(p_super_array_header header, void(*show_data)(void* data));
 int delete_node_by_match(p_super_array_header header, int (*func)(void* , void*), void* data, \
             int(*free_data)(super_array_node* node));
-int modify_node_by_match(p_super_array_header header, int (*func)(void* , void*), \
-                        void* src_data, void* dst_data);
+int modify_node_by_match(p_super_array_header header, int (*func_match)(void* , void*), \
+                        void* src_data, void* dst_data, int(*modify_node)(void* , void*));

@@ -6,6 +6,7 @@ int main()
     int index;
     int data;
     int tmp;
+    int dtmp;
     super_array_header header;
     p_super_array_header pheader = &header;
 
@@ -58,5 +59,15 @@ int main()
     get_datas_by_list(pheader, NULL);
     printf("\n\n");
 
+    printf("===============testcase4=====================\n");
+    //testcase4: 查找并修改节点
+    printf("显示supper_array数据 before 修数据3为7：\n");
+    get_datas_by_list(pheader, NULL);
+    tmp = 3;
+    dtmp = 7;
+    rtn = modify_node_by_match(pheader, NULL, &tmp, (void*)&dtmp, NULL);
+    printf("显示supper_array数据 after 删除数据3为7：\n");
+    get_datas_by_list(pheader, NULL);
+    printf("\n\n");
     return 0;
 }

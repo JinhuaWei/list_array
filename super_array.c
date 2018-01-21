@@ -66,6 +66,12 @@ static int default_free_data(super_array_node* node)
     return 0;
 }
 
+static int default_modify_node(void* src_data, void* dst_data)
+{
+    *(int*)dst_data = *(int*)src_data;
+    return 0;
+}
+
 /**
 * description: defaultly get data from node function
 */
@@ -242,10 +248,41 @@ int delete_node_by_match(p_super_array_header header, int (*func_match)(void* , 
 /**
 * description: modify node data based data matched
 */
-int modify_node_by_match(p_super_array_header header, int (*func)(void* , void*), \
-                        void* src_data, void* dst_data)
+int modify_node_by_match(p_super_array_header header, int (*func_match)(void* , void*), \
+                        void* src_data, void* dst_data, int(*modify_node)(void* , void*))
 {
-    return 0;
+
+    int tmp_index = header->first;
+    p_super_array_node r_array = header->r_array;
+    int (*pm)(void*, void*);
+    int rtn;
+    if(func_match == NULL) {
+        pm = default_match;
+    } else {
+        pm = func_match;
+    }
+
+    //匹配相关data
+    while(tmp_index != 0) {
+        rtn = pm(r_array[tmp_index].data, src_data);
+        if(rtn == 1) {
+            break;
+        }
+        tmp_index = r_array[tmp_index].next;
+    }
+    if(tmp_index == 0) {
+        printf("not founded the data in the supper_array\n");
+        return 1;
+    }
+    print_dbg("find the data at the position: %d\n", tmp_index);
+
+    //modified the data
+    if(modify_node == NULL) {
+        pm = default_modify_node;
+    } else {
+        pm = modify_node;
+    }
+    return pm(dst_data, r_array[tmp_index].data);
 }
 /**
 * desciption: defaultly show data function
@@ -257,6 +294,7 @@ static void default_show_data(void* data)
 }
 /**
 * 通过链表方式遍历整个super_array数据结构,并实现出来
+*
 */
 int get_datas_by_list(p_super_array_header header, void(*show_data)(void* data))
 {
