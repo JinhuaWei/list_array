@@ -294,7 +294,6 @@ static void default_show_data(void* data)
 }
 /**
 * 通过链表方式遍历整个super_array数据结构,并实现出来
-*
 */
 int get_datas_by_list(p_super_array_header header, void(*show_data)(void* data))
 {
