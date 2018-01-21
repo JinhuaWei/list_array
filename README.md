@@ -15,11 +15,17 @@
 
 # 使用
 编译代码：
-```make super_array_test```
+```
+make super_array_test
+```
 编译并执行：
-```make all```
+```
+make all
+```
 清除：
-```make clean```
+```
+make clean
+```
 单独执行测试用例：
 ```
 cd ${src_dir}
