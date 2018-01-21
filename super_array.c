@@ -1,3 +1,4 @@
+#define DEBUG
 #include <stdlib.h>
 #include "super_array.h"
 
@@ -42,16 +43,62 @@ int super_array_init(p_super_array_header header)
 }
 
 /**
+* default method to store data
+*/
+static int default_store_data(super_array_node* node,void* data)
+{
+    node->data = (void*)malloc(sizeof(int));
+    if(node->data == NULL) {
+        print_dbg("no memory free, malloc failed\n");
+        return 1;
+    }
+    *(int*)(node->data) = *(int*)data;
+    return 0;
+}
+
+/**
+* description: default delete data function
+*/
+
+static int default_free_data(super_array_node* node)
+{
+    free(node->data);
+    return 0;
+}
+
+/**
+* description: defaultly get data from node function
+*/
+static int default_get_data(super_array_node* node, void* data)
+{
+    if(node->data == NULL) {
+        print_dbg("node->data is null\n");
+        return 1;
+    }
+    *(int*)data = *(int*)(node->data);
+    return 0;
+}
+
+/**
 * return value:
 * 0: success , 1: no memory space, 2: null
 */
 //从头开始插入
-int insert_node(p_super_array_header header, int data, int* index)
+int insert_node(p_super_array_header header, void* data, int* index, \
+                int(*store_data)(super_array_node* node, void* data))
 {
     int i;
     int tmp;
     int rtn;
     p_super_array_node r_array;
+
+    int(*ps)(super_array_node* node, void* data);
+    if(store_data == NULL) {
+        ps = default_store_data;
+    } else {
+        ps = store_data;
+    }
+
     if(header == NULL)
         return 2;
 
@@ -81,7 +128,11 @@ int insert_node(p_super_array_header header, int data, int* index)
 
     r_array = header->r_array;
     //数据插入节点
-    r_array[*index].data = data;
+    //r_array[*index].data = data;
+    if((rtn = ps((&r_array[*index]), data)) != 0) {
+        print_dbg("store_data failed\n");
+        return 2;
+    }
     r_array[*index].valid = 1;
     //将节点插入supper_array的头
     r_array = header->r_array;
@@ -92,8 +143,8 @@ int insert_node(p_super_array_header header, int data, int* index)
     header->first = *index;
     header->len += 1;
 
-    print_dbg("inset data in the head of list, index: %d, data: %d\n", \
-         header->first, data);
+    print_dbg("inset data in the head of list, index: %d\n", \
+         header->first);
 
     return 0;
 }
@@ -102,10 +153,18 @@ int insert_node(p_super_array_header header, int data, int* index)
 * return value:
 * 0: success 1:out of range 2: no such node
 */
-int delete_node_by_index(p_super_array_header header, int index)
+int delete_node_by_index(p_super_array_header header, int index, \
+            int(*free_data)(super_array_node* node))
 {
     int tmp_previous;
     int tmp_next;
+    int (*pf)(super_array_node* node);
+
+    if(free_data == NULL) {
+        pf = default_free_data;
+    } else {
+        pf = free_data;
+    }
 
     p_super_array_node r_array = header->r_array;
     if(index >= header->total_len) {
@@ -121,6 +180,8 @@ int delete_node_by_index(p_super_array_header header, int index)
 
     //delete the node
     r_array[index].valid = 0;
+    //释放资源
+    pf(&r_array[index]);
     tmp_next = r_array[index].next;
     tmp_previous = r_array[index].previous;
     r_array[tmp_next].previous = tmp_previous;
@@ -147,32 +208,35 @@ static int default_match(void* va, void* vb)
 /**
 * descprition: delete super_array by list mothod
 */
-int delete_node_by_match(p_super_array_header header, int (*func)(void* , void*), void* data)
+int delete_node_by_match(p_super_array_header header, int (*func_match)(void* , void*), void* data, \
+            int(*free_data)(super_array_node* node))
 {
     int tmp_index = header->first;
     p_super_array_node r_array = header->r_array;
-    int (*pf)(void*, void*);
+    int (*pm)(void*, void*);
     int rtn;
-    if(func == NULL) {
-        pf = default_match;
+    if(func_match == NULL) {
+        pm = default_match;
+    } else {
+        pm = func_match;
     }
+
     //匹配相关data
     while(tmp_index != 0) {
-        rtn = pf((void*)(&r_array[tmp_index].data), data);
+        rtn = pm(r_array[tmp_index].data, data);
         if(rtn == 1) {
             break;
         }
         tmp_index = r_array[tmp_index].next;
     }
-
     if(tmp_index == 0) {
-        print_dbg("not founded the data in the supper_array\n");
+        printf("not founded the data in the supper_array\n");
         return 1;
     }
     print_dbg("find the data at the position: %d\n", tmp_index);
 
     //删除节点
-   return delete_node_by_index(header, tmp_index);
+   return delete_node_by_index(header, tmp_index, free_data);
 }
 
 /**
@@ -183,17 +247,28 @@ int modify_node_by_match(p_super_array_header header, int (*func)(void* , void*)
 {
     return 0;
 }
-
+/**
+* desciption: defaultly show data function
+*/
+static void default_show_data(void* data)
+{
+    super_array_node* pnode = (super_array_node*)data;
+    printf("data is %x, next->index=%d\n", *(int*)(pnode->data), pnode->next);
+}
 /**
 * 通过链表方式遍历整个super_array数据结构,并实现出来
 */
-int get_datas_by_list(p_super_array_header header)
+int get_datas_by_list(p_super_array_header header, void(*show_data)(void* data))
 {
     int tmp_index = header->first;
     p_super_array_node r_array = header->r_array;
 
+    if(show_data == NULL) {
+        show_data = default_show_data;
+    }
+
     while(tmp_index != 0) {
-        printf("data is %d next->index=%d\n", r_array[tmp_index].data, tmp_index);
+        show_data(&r_array[tmp_index]);
         tmp_index = r_array[tmp_index].next;
     }
     return 0;
@@ -220,12 +295,20 @@ int get_super_array_total_len(p_super_array_header header)
 * return vale:
 * 0: success , 1: out of range 2: nonvalides
 */
-int get_data_by_index(p_super_array_header header, int* data, int index)
+int get_data_by_index(p_super_array_header header, void* data, int index, \
+                int(*get_data)(super_array_node* node, void* data))
 {
     if(index >= header->total_len)
         return 1;
     if(header->r_array[index].valid == 0)
         return 2;
-    *data = header->r_array[index].data;
+    int(*pg)(super_array_node* node, void* data);
+    if(get_data == NULL) {
+        pg = default_get_data;
+    } else {
+        pg = get_data;
+    }
+    pg(&header->r_array[index], data);
+    //*data = header->r_array[index].data;
     return 0;
 }

@@ -19,8 +19,8 @@ typedef struct super_array_node {
     //1:有效，0：无效
     int valid;
     //暂时使用int类型的数据，
-    //数据类型最好是 void* 类型
-    int data;
+    //void*类型 存储任意数据类型
+    void* data;
 } super_array_node, * p_super_array_node;
 
 typedef struct super_array_header {
@@ -42,12 +42,19 @@ typedef struct super_array_header {
 }super_array_header, *p_super_array_header;
 
 int super_array_init(p_super_array_header header);
-int insert_node(p_super_array_header header, int data, int* index);
-int get_data_by_index(p_super_array_header header, int* data, int index);
+
+int get_data_by_index(p_super_array_header header, void* data, int index, \
+                int(*get_data)(super_array_node* node, void* data));
+
+int insert_node(p_super_array_header header, void* data, int* index, \
+                int(*store_data)(super_array_node* node, void* data));
+int delete_node_by_index(p_super_array_header header, int index, \
+            int(*free_data)(super_array_node* node));
+    int tmp_previous;
 int get_super_array_len(p_super_array_header header);
 int get_super_array_total_len(p_super_array_header header);
-int delete_node_by_index(p_super_array_header header, int index);
-int get_datas_by_list(p_super_array_header header);
-int delete_node_by_match(p_super_array_header header, int (*func)(void* , void*), void* data);
+int get_datas_by_list(p_super_array_header header, void(*show_data)(void* data));
+int delete_node_by_match(p_super_array_header header, int (*func)(void* , void*), void* data, \
+            int(*free_data)(super_array_node* node));
 int modify_node_by_match(p_super_array_header header, int (*func)(void* , void*), \
                         void* src_data, void* dst_data);

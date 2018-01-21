@@ -16,11 +16,12 @@ int main()
         printf("super_array_init failed\n");
     }
     tmp = 2;
-    rtn = insert_node(pheader, tmp, &index);
+
+    rtn = insert_node(pheader, (void*)&tmp, &index, NULL);
     if(rtn !=0 ) {
         printf("super_array insert_node failed , error:%d\n",rtn);
     }
-    rtn = get_data_by_index(pheader, &data, index);
+    rtn = get_data_by_index(pheader, (void*)(&data), index, NULL);
     if(rtn != 0) {
         printf("super_array get_data_by_index failed , error:%d\n", rtn);
     }
@@ -33,27 +34,28 @@ int main()
 
 
     printf("===============testcase2=====================\n");
-    //test case 2:测试super_array的增删是否正确,插入2、3、5三个数据
+    //test case 2:测试super_array的增删是否正确,插入3、5三个数据
     printf("len of super_array before insert : %d\n", get_super_array_len(pheader));
-    rtn = insert_node(pheader, 2, &index);
-    rtn = insert_node(pheader, 3, &index);
-    rtn = insert_node(pheader, 5, &index);
+    tmp = 3;
+    rtn = insert_node(pheader, (void*)&tmp, &index, NULL);
+    tmp = 5;
+    rtn = insert_node(pheader, (void*)&tmp, &index, NULL);
     printf("len of super_array after insert : %d\n", get_super_array_len(pheader));
     if(rtn != 0 ) {
         printf("testcase2 test failed\n");
     }
     printf("显示supper_array数据：\n");
-    get_datas_by_list(pheader);
+    get_datas_by_list(pheader, NULL);
     printf("\n\n");
 
     printf("===============testcase3=====================\n");
     //testcase 3：查找并删除中的节点
     printf("显示supper_array数据 before 删除数据2：\n");
-    get_datas_by_list(pheader);
+    get_datas_by_list(pheader, NULL);
     tmp = 2;
-    rtn = delete_node_by_match(pheader, NULL, &tmp);
+    rtn = delete_node_by_match(pheader, NULL, &tmp, NULL);
     printf("显示supper_array数据 after 删除数据2：\n");
-    get_datas_by_list(pheader);
+    get_datas_by_list(pheader, NULL);
     printf("\n\n");
 
     return 0;
